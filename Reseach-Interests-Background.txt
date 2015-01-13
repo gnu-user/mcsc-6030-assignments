@@ -1,1 +1,5 @@
+I am a graduate student currently still trying to finalize my thesis topic for
+my MASc program.
 
+My interests are in artificial intelligence, time series analysis, statistics
+and number theory, big data, and evolutionary computation.
