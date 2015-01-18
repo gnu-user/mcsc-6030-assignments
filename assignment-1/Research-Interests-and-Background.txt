@@ -1,5 +1,5 @@
-I am a graduate student currently still trying to finalize my thesis topic for
+I am a graduate student in electrical and computer engineering at UOIT and I am still trying to finalize my thesis topic for
 my MASc program.
 
-My interests are in artificial intelligence, time series analysis, statistics
-and number theory, big data, and evolutionary computation.
+My research interests are numerous, but in particular I am focusing on the following specifically: artificial intelligence, time series analysis, statistics
+and number theory, big data, and evolutionary computation. My undergraduate degree was in software engineering , nd I find the application of artificial intelligence to large amounts of data in order to derive new insight very exciting and interesting.
