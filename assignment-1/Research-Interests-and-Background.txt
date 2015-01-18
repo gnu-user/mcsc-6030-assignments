@@ -3,3 +3,5 @@ my MASc program.
 
 My research interests are numerous, but in particular I am focusing on the following specifically: artificial intelligence, time series analysis, statistics
 and number theory, big data, and evolutionary computation. My undergraduate degree was in software engineering , nd I find the application of artificial intelligence to large amounts of data in order to derive new insight very exciting and interesting.
+
+At present I am still trying to finalize my thesis. One of the topics I have considered would be the analysis and forecasting of financial and economic data based on the application of artificial intelligence. I am drawn to this topic based on my undergraduate experiences, in particular a course I took on artificial intelligence and a summer research project I had analyzing high frequency trading data. Another topic I have considered would be applications of evolutionary computation to solving challenging mathematical problems, I was very intrigued as an undergraduate by an example demonstrating how genetic programming can be applied to derive equations that can approximate the trigonometric functions.
