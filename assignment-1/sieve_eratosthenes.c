@@ -57,15 +57,30 @@ void sieve(uint32_t n, uint32_t *primes)
     free(A);
 }
 
+
+/* Prints the primes out comma separated */
+void print_primes(uint32_t *primes, uint32_t num_primes)
+{
+    for (uint32_t i = 0; i < num_primes; ++i)
+    {
+        if (primes[i+1])
+        {
+            printf("%d, ", primes[i]);
+        }
+        else
+        {
+            printf("%d\n", primes[i]);
+            break;
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
     int c = 0;
     bool show_primes = true;
-    uint32_t n = 30;
-    // Allocate the memory for the primes found using the prime-counting 
-    // function, pi(x): http://en.wikipedia.org/wiki/Prime-counting_function
-    uint32_t num_primes = ((uint32_t) ceil(n / log((double) n)) + 1);
-    uint32_t *primes = (uint32_t *) calloc(num_primes, sizeof(uint32_t));
+    uint32_t n = 0, num_primes = 0;
+    uint32_t *primes = NULL;
 
     // Hack to get the first non-option argument N
     if (argc > 1)
@@ -110,8 +125,22 @@ int main(int argc, char **argv)
         }
     }
 
-    /*sieve(n, primes);
+    // Allocate the memory for the primes found using the prime-counting 
+    // function, pi(x): http://en.wikipedia.org/wiki/Prime-counting_function
+    num_primes = ((uint32_t) ceil(n / log((double) n)) + 2);
+    primes = (uint32_t *) calloc(num_primes, sizeof(uint32_t));
 
+    // If N provided calc primes, otherwise try highest N within time limit
+    if (n >= 2)
+    {
+        sieve(n, primes);
+        if (show_primes)
+        {
+            print_primes(primes, num_primes);
+        }
+    }
+    
+    /*
     for (int i = 0; i < num_primes; ++i)
     {
         printf("%d, ", primes[i]);
