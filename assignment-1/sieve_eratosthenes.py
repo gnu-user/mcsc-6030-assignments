@@ -29,44 +29,49 @@ def sieve(n):
 
     return [i+2 for i in xrange(0, len(A)) if A[i]]
 
-# Get the n provided if applicable
-n = None
-print_primes = True
-args = sys.argv
 
-# Hack to get the first argument as N, if provided
-if len(args) > 1 and args[1].isdigit():
-    n = int(sys.argv[1])
-    args = args[2:]
+def main(argv):
+    # Get the n provided if applicable
+    n = None
+    print_primes = True
 
-try:
-    opts, args = getopt.getopt(args, '', ['print='])
-except getopt.GetoptError:
-    print 'sieve_eratosthenes.py --print=[true,false]'
-    sys.exit(2)
+    # Hack to get the first argument as N, if provided
+    if len(argv) > 0 and argv[0].isdigit():
+        n = int(argv[0])
+        argv = argv[1:]
 
-for opt, arg in opts:
-    if opt in ("--print"):
-        if arg.lower() == 'false':
-            print_primes = False
+    try:
+        opts, args = getopt.getopt(argv, '', ['print='])
+    except getopt.GetoptError:
+        print 'sieve_eratosthenes.py --print=[true,false]'
+        sys.exit(2)
 
-# Calculate the number of primes provided or best with time limit
-if n is not None:
-    primes = sieve(n)
-    if print_primes:
-        print "List of primes:", primes
-else:
-    # Continue multiplying the number of primes until it takes about 60 seconds
-    n = 1000
-    run_time = 0
-    primes = []
+    for opt, arg in opts:
+        if opt in ("--print"):
+            if arg.lower() == 'false':
+                print_primes = False
 
-    while run_time < 60:
-        start_time = time()
+    # Calculate the number of primes provided or best with time limit
+    if n is not None:
         primes = sieve(n)
-        run_time = time() - start_time
-        n *= 10
+        if print_primes:
+            print "List of primes:", primes
+    else:
+        # Continue multiplying the number of primes until it takes about 60 seconds
+        n = 1000
+        run_time = 0
+        primes = []
 
-    print "Solved primes using Sieve of Eratosthenes up to %d in %.2f seconds!" % (n, run_time)
-    if print_primes:
-        print "List of primes:", primes
+        while run_time < 60:
+            start_time = time()
+            primes = sieve(n)
+            run_time = time() - start_time
+            n *= 10
+
+        print "Solved primes using Sieve of Eratosthenes up to %d in %.2f seconds!" % (n, run_time)
+        if print_primes:
+            print "List of primes:", primes
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
