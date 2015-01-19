@@ -17,6 +17,7 @@
  #include <string.h>
  #include <math.h>
  #include <getopt.h>
+ #include <time.h>
 
 
 /*
@@ -81,6 +82,8 @@ int main(int argc, char **argv)
     bool show_primes = true;
     uint32_t n = 0, num_primes = 0;
     uint32_t *primes = NULL;
+    clock_t begin, end;
+    double run_time = 0.0;
 
     // Hack to get the first non-option argument N
     if (argc > 1)
@@ -125,29 +128,54 @@ int main(int argc, char **argv)
         }
     }
 
-    // Allocate the memory for the primes found using the prime-counting 
-    // function, pi(x): http://en.wikipedia.org/wiki/Prime-counting_function
-    num_primes = ((uint32_t) ceil(n / log((double) n)) + 2);
-    primes = (uint32_t *) calloc(num_primes, sizeof(uint32_t));
-
     // If N provided calc primes, otherwise try highest N within time limit
     if (n >= 2)
     {
+        // Allocate the memory for the primes found using the prime-counting 
+        // function, pi(x): http://en.wikipedia.org/wiki/Prime-counting_function
+        num_primes = ((uint32_t) ceil(n / log((double) n)) + (int) (n * 0.10));
+        primes = (uint32_t *) calloc(num_primes, sizeof(uint32_t));
+
         sieve(n, primes);
+        
         if (show_primes)
         {
             print_primes(primes, num_primes);
         }
+        free(primes);
     }
-    
-    /*
-    for (int i = 0; i < num_primes; ++i)
+    else
     {
-        printf("%d, ", primes[i]);
-    }
+        // Continue multiplying number of primes until it takes about 60 seconds
+        n = 1000;
+        num_primes = ((uint32_t) ceil(n / log((double) n)) + (int) (n * 0.10));
+        primes = (uint32_t *) calloc(num_primes, sizeof(uint32_t));
 
-    printf("\n");*/
-    free(primes);
+        while (true)
+        {
+            begin = clock();
+            sieve(n, primes);
+            end = clock();
+            run_time = (double) ((end - begin) / CLOCKS_PER_SEC);
+
+            if (run_time >= 60)
+            {
+                break;
+            }
+
+            n *= 10;
+            free(primes);
+            num_primes = ((uint32_t) ceil(n / log((double) n)) + (int) (n * 0.10));
+            primes = (uint32_t *) calloc(num_primes, sizeof(uint32_t));
+        }
+
+        printf("Solved primes using Sieve of Eratosthenes up to %d in %.2f seconds!\n", n, run_time);
+        if (show_primes)
+        {
+            print_primes(primes, num_primes);
+        }
+        free(primes);
+    }
 
     return 0;
 }
