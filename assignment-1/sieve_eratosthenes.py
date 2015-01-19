@@ -5,6 +5,7 @@
 #
 # Implementation based on the optimized implementation pseudocode provided on
 # Wikipedia: http://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
+#
 # Copyright (C) 2014, Jonathan Gillett (100437638)
 # All rights reserved.
 #
