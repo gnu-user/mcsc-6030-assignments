@@ -12,6 +12,7 @@
 from math import ceil, sqrt
 import sys
 from time import time
+import getopt
 
 
 def sieve(n):
@@ -30,12 +31,30 @@ def sieve(n):
 
 # Get the n provided if applicable
 n = None
-if len(sys.argv) > 1:
-    n = sys.argv[1]
+print_primes = True
+args = sys.argv
+
+# Hack to get the first argument as N, if provided
+if len(args) > 1 and args[1].isdigit():
+    n = int(sys.argv[1])
+    args = args[2:]
+
+try:
+    opts, args = getopt.getopt(args, '', ['print='])
+except getopt.GetoptError:
+    print 'sieve_eratosthenes.py --print=[true,false]'
+    sys.exit(2)
+
+for opt, arg in opts:
+    if opt in ("--print"):
+        if arg.lower() == 'false':
+            print_primes = False
 
 # Calculate the number of primes provided or best with time limit
 if n is not None:
-    print "List of primes:", sieve(n)
+    primes = sieve(n)
+    if print_primes:
+        print "List of primes:", primes
 else:
     # Continue multiplying the number of primes until it takes about 60 seconds
     n = 1000
@@ -49,4 +68,5 @@ else:
         n *= 10
 
     print "Solved primes using Sieve of Eratosthenes up to %d in %.2f seconds!" % (n, run_time)
-    #print "List of primes:", primes
+    if print_primes:
+        print "List of primes:", primes
