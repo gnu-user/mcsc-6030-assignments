@@ -3,7 +3,7 @@ TOL = 1.0e-16
 
 
 def exp_taylor(x, N_terms):
-    partial_sums = np.zeros_like(x)
+    partial_sums = np.zeros_like(x, dtype=np.float64)
     terms_summed = np.zeros_like(x)
 
     # An array of the N_terms
@@ -16,17 +16,20 @@ def exp_taylor(x, N_terms):
 
     # Use a loop to accumulate the partial sums
     for i in range(terms.shape[0]):
-        partial_sum = 0.0
-        for j in range(1, terms.shape[1]):
-            terms[i,j] *= terms[i, j-1]  # jth term = x**j / (j!)
-            partial_sums[i] += terms[i,j]  # Partial sum incremented in-place
-            terms_summed[i] = j
+        term = 1.0
+        partial_sum = term
+        for j in range(terms.shape[1]):
+            term *= terms[i, j]  # jth term = x**j / (j!)
+            partial_sum += term  # Partial sum incremented in-place
+            terms_summed[i] = j+1
+            partial_sums[i] = partial_sum
             # I do not know of any easy way to do this using "where"
-            if (abs(terms[i,j]) < TOL * abs(partial_sums[i])):
+            if (abs(term) < TOL * abs(partial_sum)):
                 break
-    # Get the inverse partial sum for any negative x values
-    partial_sums = np.where(partial_sums < 0, 1 / partial_sums, partial_sums)
 
+    # Apply a mask of original values that are negative to take reciprocal
+    mask = x < 0
+    partial_sums[mask] = 1 / partial_sums[mask]
     return (partial_sums, terms_summed)  # returns value & number or terms summed
 
 
