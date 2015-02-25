@@ -35,7 +35,7 @@ all : $(EXE)
 
 
 clean:
-	rm -f $(OBJECTS) $(EXE) *~
+	rm -f *.o $(EXE) *~
 
 help:
 	@echo "Valid targets:"
