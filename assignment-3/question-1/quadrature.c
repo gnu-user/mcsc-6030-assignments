@@ -32,13 +32,13 @@ void error_table(double (*fp)(double), double a, double b,
 {
     double last_error = 0.0, error, int_trap, ratio;
 
-    printf("      n         trapezoid            error       ratio\n");
+    printf("%8s %22s %13s %13s\n", "n", "trapezoid", "error", "ratio");
     for (int i = 0; i < nrows; ++i)
     {
         int_trap = trapezoid(fp, a, b, nvals[i]);
         error = fabs(int_trap - int_true);
         ratio = last_error / error;
         last_error = error; // for next n
-        printf("%8i  %22.14e  %10.3e  %10.3e\n", nvals[i], int_trap, error, ratio);
+        printf("%8d %22.14e %13.3e %13.3e\n", nvals[i], int_trap, error, ratio);
     }
 }
