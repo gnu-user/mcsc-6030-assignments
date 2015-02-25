@@ -30,5 +30,15 @@ double trapezoid(double (*fp)(double), double a, double b, int N)
 void error_table(double (*fp)(double), double a, double b, 
                  int nrows, int nvals[], double int_true)
 {
-    return;
+    double last_error = 0.0, error, int_trap, ratio;
+
+    printf("      n         trapezoid            error       ratio\n");
+    for (int i = 0; i < nrows; ++i)
+    {
+        int_trap = trapezoid(fp, a, b, nvals[i]);
+        error = fabs(int_trap - int_true);
+        ratio = last_error / error;
+        last_error = error; // for next n
+        printf("%8i  %22.14e  %10.3e  %10.3e\n", nvals[i], int_trap, error, ratio);
+    }
 }
