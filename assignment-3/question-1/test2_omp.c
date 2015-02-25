@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 {
 
   double a, b, int_true;
-  int nvals[12], nrows = 12, nthreads = 8, k;
+  int nvals[12], nrows = 12, nthreads = 2, k;
   double (*fp)(double); /* fp is a function pointer */
 
   #ifdef _OPENMP
