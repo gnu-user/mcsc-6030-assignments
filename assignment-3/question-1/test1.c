@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
 
   double a, b, int_true;
-  int nvals[7], k;
+  int nvals[7], nrows = 7, k;
   double (*fp)(double); /* fp is a function pointer */
 
   fp = f1; /* Assign function pointer fp as f1 */
@@ -23,9 +23,7 @@ int main(int argc, char *argv[])
   /* Fill in array of values of N for trapezoidal integration */
   for (k = 0; k < 7; k++)
     nvals[k] = 5 * pow(2, k);
-
-  /* You have to write the function error_table in quadrature.c */
-  int nrows = 7; /* Number of rows in the table (and length of nvals) */
+  
   error_table(fp, a, b, nrows, nvals, int_true);
 
   return 0;
