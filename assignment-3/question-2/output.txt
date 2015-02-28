@@ -1,0 +1,5 @@
+result                =  1.296467785724372934
+mathematica result    =  1.296467785724373156
+estimated error       =  0.000000007242461147
+error vs. mathematica =  0.000000000000000222
+# intervals     = 8
