@@ -34,14 +34,14 @@ main (void)
   /* Actual call to quadrature routine */
   double result, error;
   gsl_integration_qag (&F, a, b, tol_abs, tol_rel, limit,
-                        GSL_INTEG_GAUSS61, w, &result, &error); 
-  double mathematica_value = 1.29646778572437307899;
+                       GSL_INTEG_GAUSS15, w, &result, &error); 
+  double mathematica_result = 1.29646778572437307899;
 
   printf ("result                = % .18f\n", result);
-  printf ("exact result          = % .18f\n", exact_value);
+  printf ("mathematica result    = % .18f\n", mathematica_result);
   printf ("estimated error       = % .18f\n", error);
   printf ("error vs. mathematica = % .18f\n", 
-           fabs(result - mathematica_value));
+           fabs(result - mathematica_result));
   printf ("# intervals     = %d\n", (int) w->size);
 
   /* Return memory allocated for solver */
