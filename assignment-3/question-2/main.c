@@ -21,7 +21,7 @@ main (void)
   double a, b, tol_abs, tol_rel;
   int limit;
   a = 0.0;
-  b = 1.0;
+  b = 3.0;
   tol_abs = 0;
   tol_rel = 1.0e-7;
   limit = 1000;
@@ -33,8 +33,8 @@ main (void)
 
   /* Actual call to quadrature routine */
   double result, error;
-  gsl_integration_qags (&F, a, b, tol_abs, tol_rel, limit,
-                        w, &result, &error); 
+  gsl_integration_qag (&F, a, b, tol_abs, tol_rel, limit,
+                        GSL_INTEG_GAUSS61, w, &result, &error); 
   double exact_value = -4.0;
 
   printf ("result          = % .18f\n", result);
