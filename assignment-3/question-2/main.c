@@ -35,13 +35,13 @@ main (void)
   double result, error;
   gsl_integration_qag (&F, a, b, tol_abs, tol_rel, limit,
                         GSL_INTEG_GAUSS61, w, &result, &error); 
-  double exact_value = -4.0;
+  double mathematica_value = 1.29646778572437307899;
 
-  printf ("result          = % .18f\n", result);
-  printf ("exact result    = % .18f\n", exact_value);
-  printf ("estimated error = % .18f\n", error);
-  printf ("actual error    = % .18f\n", 
-           fabs(result - exact_value));
+  printf ("result                = % .18f\n", result);
+  printf ("exact result          = % .18f\n", exact_value);
+  printf ("estimated error       = % .18f\n", error);
+  printf ("error vs. mathematica = % .18f\n", 
+           fabs(result - mathematica_value));
   printf ("# intervals     = %d\n", (int) w->size);
 
   /* Return memory allocated for solver */
