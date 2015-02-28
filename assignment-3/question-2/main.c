@@ -27,8 +27,8 @@ main (void)
   limit = 1000;
 
   // Test that the function is implemented properly
-  double test = GSL_FN_EVAL(&F,2);
-  printf("RESULT: %.18f\n", test);
+  //double test = GSL_FN_EVAL(&F,2);
+  //printf("TEST RESULT: %.18f\n", test);
 
 
   /* Actual call to quadrature routine */
