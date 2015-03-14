@@ -1,0 +1,2 @@
+Put the files mpi_ping_pong.c and mpi_ping_pong.py in this directory
+Be sure to include a Makefile and to modify this README when done.
