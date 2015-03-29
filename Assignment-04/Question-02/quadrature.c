@@ -40,6 +40,7 @@ double simpson (double (*fp)(double), double a, double b, int N)
   */
   double h = (b-a)/(N-1), total = 0.0;
 
+  #pragma omp parallel for reduction(+ : total)
   for (int m = 0; m < N; m++) {
      double xj = m*h + a;
      double xc = xj + h/2.0;
