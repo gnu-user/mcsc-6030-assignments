@@ -10,12 +10,17 @@ OBJECTS = $(subst .c,.o,$(SOURCES))
 test.exe : test.o quadrature.o functions.o
 	$(CC) $(CFLAGS) $(OPENMP) $^ $(LIBS) -o $@ 
 
+test2.exe : test2.o quadrature.o functions.o
+	$(CC) $(CFLAGS) $(OPENMP) $^ $(LIBS) -o $@ 
+
 %.o : %.c
 	$(CC) $(CFLAGS) $(OPENMP) -c $< 
 
 test.o : functions.o quadrature.o
 
-all : test.exe
+test2.o : functions.o quadrature.o
+
+all : test.exe test2.exe
 
 clean:
 	rm -f $(OBJECTS) test.exe *~
