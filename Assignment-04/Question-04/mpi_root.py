@@ -13,8 +13,8 @@ from mpi4py import MPI
 # Define process 0 as MASTER
 MASTER = 0
 # Set the subinterval limit
-INTERVAL = 10E-9
-# Set the width for search space
+INTERVAL = 10E-11
+# Set the width for the search space for each subinterval
 WIDTH = 1E6
 
 
@@ -27,8 +27,8 @@ def master(n_proc, comm):
     """The master process divides the interval [0, 1] into subintervals."""
     # Divide the interval [0,1] into several subintervals for each process
     intervals = np.linspace(0, 1, n_proc)
-    ANS = np.zeros(2, dtype=np.float64)  # The result and r value from processes
-    SOL = np.ones(2, dtype=np.float64)  # The final smallest solution and r value
+    ANS = np.zeros(4, dtype=np.float64)  # The result, r value, bounds from processes
+    SOL = np.ones(4, dtype=np.float64)  # The final smallest solution, r value, bounds
     n_sent = 0  # Number of processes evaluating subintervals
 
     # Assign to each task an endpoint of one of the subintervals at which the
@@ -43,20 +43,24 @@ def master(n_proc, comm):
         # Receive the r value and result that closest approximates function f(x)
         comm.Recv(ANS, source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=status)
         sender = status.source
-        width = status.tag
+        width = status.tag  # left bound of the interval the process received
 
-        # Record the results if solution is closer to zero
-        print "ANS: %g, SOL: %g" % (ANS[0], SOL[0])
+        # Analyse the function values determined by each process to find a new
+        # subinterval [a,b]c[0,1] within which the solution r is guaranteed to lie.
+        #print "ANS: %g, %g  SOL: %g, %g" % (ANS[0], ANS[1], SOL[0], SOL[1])
         if np.absolute(ANS[0]) <= np.absolute(SOL[0]):
             SOL = np.copy(ANS)
+            # Update the subintervals for the search space
+            print "LEFT: %1.15g, RIGHT: %1.15g" % (ANS[2], ANS[3])
+            intervals = np.linspace(ANS[2], ANS[3], n_proc)
 
         # Terminate when the subinterval width is reduced below 10E-11
-        if ((1.0 / n_proc) / width <= INTERVAL):
+        if (ANS[3] - ANS[2]) / width <= INTERVAL:
             comm.Send(intervals[sender-1:sender+1], sender, tag=0)
             n_sent -= 1
         else:
             # Divide subinterval into smaller pieces for execution again
-            comm.Send(intervals[sender-1:sender+1], sender, tag=width*2.0)
+            comm.Send(intervals[sender-1:sender+1], sender, tag=WIDTH)
 
     # Master process prints the approximate zero of the function f to standard output
     print "The approximate solution: %1.15g, for r = %1.15g" % (SOL[0], SOL[1])
@@ -65,31 +69,28 @@ def master(n_proc, comm):
 def slave(proc_id, comm):
     """The slave process receives the intervals to calculate and the width."""
     bounds = np.zeros(2, dtype=np.float64)
-    ans = np.zeros(2, dtype=np.float)
+    ans = np.zeros(4, dtype=np.float)
     status = MPI.Status()
     comm.Recv(bounds, source=MASTER, tag=MPI.ANY_TAG, status=status)
     width = status.tag
 
+    print "proc_id: %d, left: %1.15g, right: %1.15g" % (proc_id, bounds[0], bounds[1])
     while width > 0:
-        # Analyse the function values determined by each process to find a new
-        # subinterval [a,b]c[0,1] within which the solution r is guaranteed to lie.
+        # Calculate the result of the function for each value of r
         r = np.linspace(bounds[0], bounds[1], width)
-        results = f(r)  # Calculate the result of the function for each value of r
+        results = f(r)
 
         # Find the result that is closest to 0 and return the r value
         min_idx = np.argmin(np.absolute(results))
-        ans[0], ans[1] = results[min_idx], r[min_idx]
+        ans = np.array([results[min_idx], r[min_idx], bounds[0], bounds[1]], dtype=np.float64)
 
         # Return the results to master process and wait for more work
         comm.Send(ans, MASTER, tag=width)
 
-        # Clean up memory used
-        del(r)
-        del(results)
-
         status = MPI.Status()
         comm.Recv(bounds, source=MASTER, tag=MPI.ANY_TAG, status=status)
         width = status.tag
+        print "proc_id: %d, left: %1.15g, right: %1.15g" % (proc_id, bounds[0], bounds[1])
 
 
 if __name__ == '__main__':
