@@ -28,7 +28,7 @@ double f(double x) {
 
 // Sets the intervals given the bounds and number of subintervals
 void set_intervals(double intervals[], double left, double right, int n) {
-    double h = ((right - left) / n);
+    double h = ((right - left) / (n-1));
     for (int i = 0; i < n; ++i) {
         intervals[i] = left + h*i;
     }
