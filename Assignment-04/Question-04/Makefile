@@ -1,5 +1,5 @@
 MPICC = mpicc
-CFLAGS = -Wall -std=c99
+CFLAGS = -Wall -O2 -march=native -std=c99
 OPENMP = -fopenmp
 LFLAGS = 
 LIBS = -lm
