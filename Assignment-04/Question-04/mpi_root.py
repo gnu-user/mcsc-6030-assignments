@@ -47,11 +47,9 @@ def master(n_proc, comm):
 
         # Analyse the function values determined by each process to find a new
         # subinterval [a,b]c[0,1] within which the solution r is guaranteed to lie.
-        #print "ANS: %g, %g  SOL: %g, %g" % (ANS[0], ANS[1], SOL[0], SOL[1])
         if np.absolute(ANS[0]) <= np.absolute(SOL[0]):
             SOL = np.copy(ANS)
             # Update the subintervals for the search space
-            print "LEFT: %1.15g, RIGHT: %1.15g" % (ANS[2], ANS[3])
             intervals = np.linspace(ANS[2], ANS[3], n_proc)
 
         # Terminate when the subinterval width is reduced below 10E-11
@@ -74,7 +72,6 @@ def slave(proc_id, comm):
     comm.Recv(bounds, source=MASTER, tag=MPI.ANY_TAG, status=status)
     width = status.tag
 
-    print "proc_id: %d, left: %1.15g, right: %1.15g" % (proc_id, bounds[0], bounds[1])
     while width > 0:
         # Calculate the result of the function for each value of r
         r = np.linspace(bounds[0], bounds[1], width)
@@ -90,7 +87,6 @@ def slave(proc_id, comm):
         status = MPI.Status()
         comm.Recv(bounds, source=MASTER, tag=MPI.ANY_TAG, status=status)
         width = status.tag
-        print "proc_id: %d, left: %1.15g, right: %1.15g" % (proc_id, bounds[0], bounds[1])
 
 
 if __name__ == '__main__':
