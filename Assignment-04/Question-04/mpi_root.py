@@ -3,7 +3,7 @@
 #
 # Assignment 4, Question 4 solution using MPI in Python.
 #
-# Copyright (C) 2014, Jonathan Gillett (100437638)
+# Copyright (C) 2015, Jonathan Gillett (100437638)
 # All rights reserved.
 #
 ###############################################################################
@@ -43,7 +43,7 @@ def master(n_proc, comm):
         # Receive the r value and result that closest approximates function f(x)
         comm.Recv(ANS, source=MPI.ANY_SOURCE, tag=MPI.ANY_TAG, status=status)
         sender = status.source
-        width = status.tag  # left bound of the interval the process received
+        width = status.tag
 
         # Analyse the function values determined by each process to find a new
         # subinterval [a,b]c[0,1] within which the solution r is guaranteed to lie.

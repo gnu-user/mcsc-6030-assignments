@@ -14,7 +14,7 @@
 // Define the subinterval limit
 #define INTERVAL 10E-11
 // Set the width for the search space of each subinterval
-#define WIDTH 1E7
+#define WIDTH 1E6
 // Message tags
 #define REQUEST 1
 #define REPLY   2
@@ -47,9 +47,6 @@ void master(int n_proc) {
 
     // Assign to each task an endpoint of one of the subintervals at which
     // the function f should be evaluated
-    // Print intervals
-    printf("INTERVALS: [%f, %f, %f, %f]\n", 
-           intervals[0], intervals[1], intervals[2], intervals[3]);
     for (int i = 1; i < n_proc; ++i) {
         double bounds[2] = { intervals[i-1], intervals[i] };
         MPI_Send(bounds, 2, MPI_DOUBLE, i, REQUEST, MPI_COMM_WORLD);
@@ -63,21 +60,13 @@ void master(int n_proc) {
 
         // Analyse the function values determined by each process to find a new
         // subinterval [a,b]c[0,1] within the solution r is guaranteed to lie
-        printf("ANS: %1.15g, %f  SOL: %1.15g, %f\n", ANS[0], ANS[1], SOL[0], SOL[1]);
         if (fabs(ANS[0]) <= fabs(SOL[0])) {
-            printf("NEW ANS: %1.15g, R: %1.15g  SOL: %1.15g, R: %1.15g\n",
-                    ANS[0], ANS[1], SOL[0], SOL[1]);
-            printf("NEW BOUNDS: [%1.15g, %1.15g]\n", ANS[2], ANS[3]);
-            printf("OLD INTERVALS: [%f, %f, %f, %f]\n", 
-                   intervals[0], intervals[1], intervals[2], intervals[3]);
             SOL[0] = ANS[0];
             SOL[1] = ANS[1];
             SOL[2] = ANS[2];
             SOL[3] = ANS[3];
             // Update the subintervals for the search space
             set_intervals(intervals, ANS[2], ANS[3], n_proc);
-            printf("NEW INTERVALS: [%f, %f, %f, %f]\n", 
-                   intervals[0], intervals[1], intervals[2], intervals[3]);
         }
 
         // Reduce num sent when below 10E-11
@@ -107,7 +96,6 @@ void slave(int proc_id) {
     MPI_Status status;
     MPI_Recv(bounds, 2, MPI_DOUBLE, MASTER, REQUEST,
              MPI_COMM_WORLD, &status);
-    printf("BOUNDS: [%f, %f]\n", bounds[0], bounds[1]);
     while (bounds[0] >= 0) {
         h = (bounds[1] - bounds[0]) / (double)(WIDTH -1);
         // Given the width iterate through each value of r
@@ -127,7 +115,6 @@ void slave(int proc_id) {
                  MPI_COMM_WORLD);
         MPI_Recv(bounds, 2, MPI_DOUBLE, MASTER, REQUEST, 
                  MPI_COMM_WORLD, &status);
-        printf("BOUNDS: [%f, %f]\n", bounds[0], bounds[1]);
     }
 }
 
