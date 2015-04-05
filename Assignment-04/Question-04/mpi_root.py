@@ -61,7 +61,7 @@ def master(n_proc, comm):
             comm.Send(intervals[sender-1:sender+1], sender, tag=WIDTH)
 
     # Master process prints the approximate zero of the function f to standard output
-    print "The approximate solution: %1.15g, for r = %1.15g" % (SOL[0], SOL[1])
+    print "Approx zero of function f(x): %1.15g\nr value: %1.15g" % (SOL[0], SOL[1])
 
 
 def slave(proc_id, comm):
