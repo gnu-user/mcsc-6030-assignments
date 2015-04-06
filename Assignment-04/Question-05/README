@@ -1,2 +1,24 @@
-Put the file mpi_monte_carlo.c in this directory.
-Be sure to include a Makefile and to modify this README when done.
+QUESTION 5
+========================================
+
+The following source file, matvec.c contains the implementation of the 
+matvec.py introducted in class implemented in C using MPI and the BLAS
+library routines for vector and matrix operations.
+
+
+Execution
+----------------------------------------
+
+Before executing the implementation you must have the BLAS/LAPACK
+libraries installed on your system, follow the instructions below.
+
+1. To install the BLAS/LAPACK libraries on most Ubuntu based Linux
+   systems simply install the following packages.
+
+   sudo apt-get install build-essential liblapack* libblas*
+
+2. After installing the BLAS/LAPACK libraries you can then
+   build and execute the code using the following commands.
+
+   make
+   mpiexec -np 4 ./matvec.exe
