@@ -1,2 +1,30 @@
-Put the files mpi_root.c and mpi_root.py in this directory
-Be sure to include a Makefile and to modify this README when done.
+QUESTION 4
+========================================
+
+The following two source files: mpi_root.py and mpi_root.c contain
+the implementations of the solution to question 4 using a master
+slave style algorithm with MPI. Both implementations find the
+approximate zero of the function f(x) and also print out the
+corresponding r value for the result. Each imlementation terminates
+when the subinterval width is reduced below 10E-11.
+
+
+Execution
+----------------------------------------
+
+Each execution will terminate eventually, it does take a reasonable
+amount of computational time before the terminating condition of
+a subinterval width of 10E-11 is reached.
+
+1. To execute the python implementation using MPI simply execute
+   the following commands, you may need to explicitly specify
+   the python2 environment.
+
+   mpiexec -np 4 python2 mpi_root.py
+
+2. To execute the C implementation you must first compile the
+   code using the provided make file and then execute it
+   using the following commands.
+
+   make
+   mpiexec -np 4 ./mpi_root.exe
