@@ -117,7 +117,7 @@ void slave(int proc_id, int n_rows, int n_cols) {
                  MPI_COMM_WORLD, &status);
         row = status.MPI_TAG;
     }
-}  
+}
 
 
 int main(int argc, char *argv[]) {
