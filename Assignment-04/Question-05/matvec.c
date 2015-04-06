@@ -6,6 +6,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <math.h>
 #include <cblas.h>
 #include <mpi.h>
@@ -25,10 +26,8 @@ void master(int n_proc, int n_rows, int n_cols) {
     double *x = (double *) malloc(n_cols*sizeof(double));
     double *y = (double *) malloc(n_rows*sizeof(double));
     double *z = (double *) malloc(n_rows*sizeof(double));
-    double **A = (double **) malloc(n_rows*sizeof(double *));
-    for (int i = 0; i < n_rows; ++i) {
-        A[i] = (double *) malloc(n_cols*sizeof(double));
-    }
+    double *A = (double *) malloc(n_rows*n_cols*sizeof(double));
+    double *sub = (double *) malloc(n_cols*sizeof(double));
     double ans = 0.0;
     int n_sent = 0, row = 0, sender = 0;
     MPI_Status status;
@@ -39,7 +38,7 @@ void master(int n_proc, int n_rows, int n_cols) {
     } 
     for (int i = 0; i < n_rows; ++i) {
         for (int j = 0; j < n_cols; ++j) {
-            A[i][j] = i+1;
+            A[(i*n_cols)+j] = i+1;
         }
     }
     
@@ -48,7 +47,8 @@ void master(int n_proc, int n_rows, int n_cols) {
 
     // 3. Send first rows to other processes
     for (int i = 1; i < min(n_rows+1, n_proc); ++i) {
-        MPI_Send(A[n_sent], n_cols, MPI_DOUBLE, i, n_sent, MPI_COMM_WORLD);
+    	memcpy((void *) sub, (void *) &A[n_sent*n_cols], n_cols * sizeof(double));
+        MPI_Send(sub, n_cols, MPI_DOUBLE, i, n_sent, MPI_COMM_WORLD);
         n_sent++;
     }
 
@@ -64,7 +64,8 @@ void master(int n_proc, int n_rows, int n_cols) {
         // Either send another row back to sender or send final y=Ax
         // along with a tag to signal completion.
         if (n_sent < n_rows) {
-            MPI_Send(A[n_sent], n_cols, MPI_DOUBLE, sender, n_sent, MPI_COMM_WORLD);
+        	memcpy((void *) sub, (void *) &A[n_sent*n_cols], n_cols * sizeof(double));
+            MPI_Send(sub, n_cols, MPI_DOUBLE, sender, n_sent, MPI_COMM_WORLD);
             n_sent++;
         }
         // Inform sender that there is no more work
@@ -80,14 +81,13 @@ void master(int n_proc, int n_rows, int n_cols) {
     for (int i = 0; i < n_rows; ++i) {
     	y[i] -= z[i];
     }
-    printf("Check: ||y-Ax|| = %f", cblas_dnrm2(n_rows, y, 1));
+    printf("Check: ||y-Ax|| = %f\n", cblas_dnrm2(n_rows, y, 1));
 
     free(x);
     free(y);
-    for (int i = 0; i < n_rows; ++i) {
-        free(A[i]);
-    }
+    free(z);
     free(A);
+    free(sub);
 }
 
 
