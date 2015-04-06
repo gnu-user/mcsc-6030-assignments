@@ -1,18 +1,17 @@
 MPICC = mpicc
 CFLAGS = -Wall -O2 -march=native -std=c99
-OPENMP = -fopenmp
 LFLAGS = 
-LIBS = -lm
+LIBS = -lblas -lcblas -lm
 SOURCES = matvec.c
 OBJECTS = $(subst .c,.o,$(SOURCES))
 EXE = matvec.exe
 .PHONY: clean help
 
 matvec.exe : matvec.o
-	$(MPICC) $(CFLAGS) $(OPENMP) $^ $(LIBS) -o $@ 
+	$(MPICC) $(CFLAGS) $^ $(LIBS) -o $@ 
 
 %.o : %.c
-	$(MPICC) $(CFLAGS) $(OPENMP) -c $< 
+	$(MPICC) $(CFLAGS) -c $< 
 
 all : $(EXE)
 
