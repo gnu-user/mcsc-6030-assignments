@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <cblas.h>
 #include <mpi.h>
 
 // Minimum of two values
@@ -23,6 +24,7 @@ void master(int n_proc, int n_rows, int n_cols) {
     // 0. Allocate space for arrays as needed to compute y = A*x
     double *x = (double *) malloc(n_cols*sizeof(double));
     double *y = (double *) malloc(n_rows*sizeof(double));
+    double *z = (double *) malloc(n_rows*sizeof(double));
     double **A = (double **) malloc(n_rows*sizeof(double *));
     for (int i = 0; i < n_rows; ++i) {
         A[i] = (double *) malloc(n_cols*sizeof(double));
@@ -71,7 +73,15 @@ void master(int n_proc, int n_rows, int n_cols) {
         }
     }
 
-    puts("Finished!");
+    printf("Finished!\n");
+    // Calculate the norm to verify ||y-Ax|| is correct
+    cblas_dgemv(CblasRowMajor, CblasNoTrans, n_rows, n_cols, 1.0, A, n_cols,
+	      		x, 1, 0.0, z, 1);
+    for (int i = 0; i < n_rows; ++i) {
+    	y[i] -= z[i];
+    }
+    printf("Check: ||y-Ax|| = %f", cblas_dnrm2(n_rows, y, 1));
+
     free(x);
     free(y);
     for (int i = 0; i < n_rows; ++i) {
@@ -100,7 +110,7 @@ void slave(int proc_id, int n_rows, int n_cols) {
 
     while (row < n_rows) {
         // Compute inner product and return result to master process
-        ans = 1.0;
+        ans = cblas_ddot(n_cols, my_row, 1, x, 1);
         MPI_Send(&ans, 1, MPI_DOUBLE, MASTER, row, MPI_COMM_WORLD);
         // Receive new row from master
         MPI_Recv(my_row, n_cols, MPI_DOUBLE, MASTER, MPI_ANY_TAG, 
