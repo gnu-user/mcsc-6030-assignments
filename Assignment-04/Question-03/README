@@ -1,2 +1,45 @@
-Put the files mpi_ping_pong.c and mpi_ping_pong.py in this directory
-Be sure to include a Makefile and to modify this README when done.
+QUESTION 3
+========================================
+
+The following source file, mpi_ping_pong.c and mpi_ping_pong.py 
+contains the implementation of the ping-pong timing experiments
+using MPI in both C and Python.
+
+
+Prerequisites
+----------------------------------------
+
+Before executing the implementation you must have the BLAS/LAPACK
+libraries installed on your system, follow the instructions below.
+
+To install the BLAS/LAPACK libraries on most Ubuntu based Linux
+systems simply install the following packages.
+
+   sudo apt-get install build-essential liblapack* libblas*
+
+
+Execution
+----------------------------------------
+
+To execute the ping-pong timing experiments you can either execute
+each implementation manually or you can execute the benchmark script
+which executes each implementation with a variety of test sizes.
+
+1. To execute the implementation in C you can build and execute the
+   code using the following commands to run a test with 1000 bytes.
+
+   make
+   mpiexec -np 2 ./mpi_ping_pong.exe 1000
+
+2. To execute the implementation in Python you can execute the
+   code using the following commands to run a test with 1000 bytes.
+
+   mpiexec -np 2  python2 ./mpi_ping_pong.py 1000
+
+3. If you wish to run the benchmark, which will execute both
+   implementations with a variety of input sizes to test
+   build the code and run the script using the following commands.
+
+   make
+   ./benchmark.sh
+
